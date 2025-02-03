@@ -23,10 +23,10 @@ func main() {
 	apiCfg := apiConfig{}
 
 	mux := http.NewServeMux()
-	mux.Handle("/metrics", handlerHitCount(&apiCfg))
-	mux.Handle("/reset", handlerHitCountReset(&apiCfg))
 	mux.Handle("/app/", apiCfg.middlewareMetricsInc(http.StripPrefix("/app/", http.FileServer(http.Dir(".")))))
 	mux.HandleFunc("/healthz", handlerReadiness)
+	mux.Handle("/metrics", handlerMetrics(&apiCfg))
+	mux.Handle("/reset", handlerReset(&apiCfg))
 
 	srv := &http.Server{
 		Addr:    ":" + port,
@@ -37,7 +37,7 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func handlerHitCount(apiCfg *apiConfig) http.HandlerFunc {
+func handlerMetrics(apiCfg *apiConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			w.WriteHeader(http.StatusMethodNotAllowed)
@@ -48,28 +48,4 @@ func handlerHitCount(apiCfg *apiConfig) http.HandlerFunc {
 		hits := apiCfg.fileserverHits.Load()
 		w.Write([]byte(fmt.Sprintf("Hits: %d", hits)))
 	}
-}
-
-func handlerHitCountReset(apiCfg *apiConfig) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		apiCfg.fileserverHits.Store(0)
-		w.Header().Add("Content-Type", "text/plain; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		hits := apiCfg.fileserverHits.Load()
-		w.Write([]byte(fmt.Sprintf("Hits: %d", hits)))
-	}
-}
-
-func handlerReadiness(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(http.StatusText(http.StatusOK)))
 }
