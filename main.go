@@ -25,12 +25,13 @@ func main() {
 	mux.HandleFunc("GET "+apiPrefix+"healthz", handlerReadiness)
 
 	mux.HandleFunc("POST /admin/reset", apiCfg.handlerReset)
-
 	mux.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: mux,
 	}
+
+	mux.HandleFunc("POST /api/validate_chirp", handlerChirpsValidate)
 
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
