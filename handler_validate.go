@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -12,8 +11,7 @@ func handlerChirpsValidate(w http.ResponseWriter, r *http.Request) {
 		Body string `json:"body"`
 	}
 	type returnVals struct {
-		Valid bool   `json:"valid"`
-		Body  string `json:"cleaned_body"`
+		CleanedBody string `json:"cleaned_body"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -30,21 +28,21 @@ func handlerChirpsValidate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(params.Body)
-	badWords := []string{"kerfuffle", "sharbert", "fornax"}
-	words := strings.Fields(params.Body)
-	for i, word := range words {
-		for _, badWord := range badWords {
-			if strings.EqualFold(strings.ToLower(word), badWord) {
-				words[i] = "****"
-			}
-		}
-
-	}
+	badWords := map[string]struct{}{"kerfuffle": {}, "sharbert": {}, "fornax": {}}
+	cleaned := getCleanedBody(params.Body, badWords)
 
 	respondWithJSON(w, http.StatusOK, returnVals{
-		Valid: true,
-		Body:  strings.Join(words, " "),
+		CleanedBody: cleaned,
 	})
 
+}
+
+func getCleanedBody(body string, badWords map[string]struct{}) string {
+	words := strings.Fields(body)
+	for i, word := range words {
+		if _, ok := badWords[strings.ToLower(word)]; ok {
+			words[i] = "****"
+		}
+	}
+	return strings.Join(words, " ")
 }
