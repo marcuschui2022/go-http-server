@@ -8,9 +8,15 @@ import (
 func main() {
 	const port = "8080"
 
+	endpoint := func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	}
+
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.Dir(".")))
-	mux.Handle("/assets/", http.FileServer(http.Dir(".")))
+	mux.Handle("/app/", http.StripPrefix("/app/", http.FileServer(http.Dir("."))))
+	mux.HandleFunc("/healthz", endpoint)
 
 	srv := &http.Server{
 		Addr:    ":" + port,
