@@ -1,17 +1,27 @@
-### test create user
-POST http://localhost:8080/api/users
-Content-Type: application/json
-
-{
-  "email": "{{$random.uuid}}@example.com"
-}
-
 ### test reset
 POST http://localhost:8080/admin/reset
 Content-Type: application/json
 
 {
   "email": "{{$random.uuid}}@example.com"
+}
+
+### test register new user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "{{$random.uuid}}@example.com",
+  "password": "password1"
+}
+
+### test user login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "email": "f36645e2-b89f-4f02-ae21-22c2e5844926@example.com",
+  "password": "passwor2d1"
 }
 
 ### test create chirp
