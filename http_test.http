@@ -20,7 +20,7 @@ Content-Type: application/json
 
 {
   "body": "Hello, world! 2",
-  "user_id": "adad80a4-efca-44ed-9d2d-d7d4f8578947"
+  "user_id": "b4eacf70-5027-4276-9abc-389f34740922"
 }
 
 ### test get chirps
