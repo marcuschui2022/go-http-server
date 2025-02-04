@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 )
@@ -17,11 +18,9 @@ func (cfg *apiConfig) handlerReset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cfg.fileserverHits.Store(0)
 	w.WriteHeader(http.StatusOK)
-
-	//cfg.fileserverHits.Store(0)
-	//w.WriteHeader(http.StatusOK)
-	//if _, err := w.Write([]byte("Hits reset to 0")); err != nil {
-	//	log.Printf("Error writing response: %v", err)
-	//}
+	if _, err := w.Write([]byte("Hits reset to 0")); err != nil {
+		log.Printf("Error writing response: %v", err)
+	}
 }
