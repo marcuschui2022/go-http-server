@@ -1,4 +1,4 @@
-### test
+### test create user
 POST http://localhost:8080/api/users
 Content-Type: application/json
 
@@ -6,11 +6,20 @@ Content-Type: application/json
   "email": "{{$random.uuid}}@example.com"
 }
 
-### test rest
+### test reset
 POST http://localhost:8080/admin/reset
 Content-Type: application/json
 
 {
   "email": "{{$random.uuid}}@example.com"
+}
+
+### test create chirp
+POST http://localhost:8080/api/chirps
+Content-Type: application/json
+
+{
+  "body": "Hello, world! 2",
+  "user_id": "9a1c9f94-84a4-43d3-b8e6-853465e68b05"
 }
 
