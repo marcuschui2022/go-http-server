@@ -1,24 +1,16 @@
-#### test 1
-#POST http://localhost:8080/api/validate_chirp
-#Content-Type: application/json
-#
-#{
-#  "body": "This is an opinion I need to share with the world",
-#  "valid": true
-#}
-#
-#> {%
-# client.test("status code should be return 200", function (){
-#     client.assert(response.status===200)
-# })
-# %}
-
-### test 2
-POST http://localhost:8080/api/validate_chirp
+### test
+POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "body": "I really need a kerfuffle to go to bed sooner, Fornax !"
+  "email": "{{$random.uuid}}@example.com"
+}
 
+### test rest
+POST http://localhost:8080/admin/reset
+Content-Type: application/json
+
+{
+  "email": "{{$random.uuid}}@example.com"
 }
 
