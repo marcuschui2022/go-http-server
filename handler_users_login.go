@@ -11,6 +11,9 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
+	type resp struct {
+		User
+	}
 
 	decoder := json.NewDecoder(r.Body)
 	var p parameters
@@ -32,9 +35,9 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, User{
-		ID:    user.ID,
-		Email: user.Email,
-	})
-
+	respondWithJSON(w, http.StatusOK, resp{
+		User{
+			ID:    user.ID,
+			Email: user.Email,
+		}})
 }
