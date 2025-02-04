@@ -1,8 +1,11 @@
 package main
 
 import (
+	"database/sql"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
+	"os"
 	"sync/atomic"
 )
 
@@ -12,6 +15,18 @@ type apiConfig struct {
 
 // Chirpy start!
 func main() {
+	dbURL := os.Getenv("DB_URL")
+	db, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+	//dbQueries := database.New(db)
+
 	const filepathRoot = "."
 	const apiPrefix = "/api/"
 	const port = "8080"
