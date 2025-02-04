@@ -20,6 +20,11 @@ Content-Type: application/json
 
 {
   "body": "Hello, world! 2",
-  "user_id": "9a1c9f94-84a4-43d3-b8e6-853465e68b05"
+  "user_id": "adad80a4-efca-44ed-9d2d-d7d4f8578947"
 }
+
+### test get chirps
+GET http://localhost:8080/api/chirps
+Accept: application/json
+
 

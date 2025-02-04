@@ -64,6 +64,7 @@ func main() {
 
 	mux.HandleFunc("POST /api/users", apiCfg.handlerCreateUser)
 	mux.HandleFunc("POST /api/chirps", apiCfg.handlerCreateChirp)
+	mux.HandleFunc("GET /api/chirps", apiCfg.handlerGetChirps)
 
 	srv := &http.Server{
 		Addr:    ":" + port,
@@ -72,4 +73,27 @@ func main() {
 
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
+}
+
+func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
+	_ = r
+	chirps, err := cfg.db.GetChirps(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't get chirps", err)
+		return
+	}
+	//type Chirps struct {
+	//	Chirps []Chirp
+	//}
+	var resp []Chirp
+	for _, chirp := range chirps {
+		resp = append(resp, Chirp{
+			ID:        chirp.ID,
+			CreatedAt: chirp.CreatedAt,
+			UpdatedAt: chirp.UpdatedAt,
+			Body:      chirp.Body,
+			UserID:    chirp.UserID,
+		})
+	}
+	respondWithJSON(w, http.StatusOK, resp)
 }
