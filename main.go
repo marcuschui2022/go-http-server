@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"example.com/marcus/go-http-server/internal/database"
-	"fmt"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
@@ -15,6 +13,7 @@ import (
 
 type apiConfig struct {
 	fileserverHits atomic.Int32
+	db             *database.Queries
 }
 
 // Chirpy start!
@@ -24,28 +23,28 @@ func main() {
 		return
 	}
 	dbURL := os.Getenv("DB_URL")
-	fmt.Println(dbURL)
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(db)
 
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
 	dbQueries := database.New(db)
-	user, err := dbQueries.CreateUser(context.Background(), "marcus@marcus.com")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(user)
 
 	const filepathRoot = "."
 	const apiPrefix = "/api/"
 	const port = "8080"
 	apiCfg := apiConfig{
 		fileserverHits: atomic.Int32{},
+		db:             dbQueries,
 	}
 
 	mux := http.NewServeMux()
