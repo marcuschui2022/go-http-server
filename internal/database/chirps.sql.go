@@ -36,7 +36,8 @@ func (q *Queries) CreateChirp(ctx context.Context, arg CreateChirpParams) (Chirp
 }
 
 const getChirps = `-- name: GetChirps :many
-select id, created_at, updated_at, body, user_id from chirps
+select id, created_at, updated_at, body, user_id
+from chirps
 order by created_at
 `
 
@@ -67,4 +68,23 @@ func (q *Queries) GetChirps(ctx context.Context) ([]Chirp, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getChirpsByID = `-- name: GetChirpsByID :one
+select id, created_at, updated_at, body, user_id
+from chirps
+where id = $1
+`
+
+func (q *Queries) GetChirpsByID(ctx context.Context, id uuid.UUID) (Chirp, error) {
+	row := q.db.QueryRowContext(ctx, getChirpsByID, id)
+	var i Chirp
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Body,
+		&i.UserID,
+	)
+	return i, err
 }

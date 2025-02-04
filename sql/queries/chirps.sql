@@ -4,5 +4,11 @@ values (gen_random_uuid(), now(), now(), $1, $2)
 returning *;
 
 -- name: GetChirps :many
-select * from chirps
+select *
+from chirps
 order by created_at;
+
+-- name: GetChirpsByID :one
+select *
+from chirps
+where id = $1;
