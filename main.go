@@ -1,7 +1,11 @@
 package main
 
 import (
+	"context"
 	"database/sql"
+	"example.com/marcus/go-http-server/internal/database"
+	"fmt"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
@@ -15,7 +19,12 @@ type apiConfig struct {
 
 // Chirpy start!
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		return
+	}
 	dbURL := os.Getenv("DB_URL")
+	fmt.Println(dbURL)
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
@@ -25,7 +34,12 @@ func main() {
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-	//dbQueries := database.New(db)
+	dbQueries := database.New(db)
+	user, err := dbQueries.CreateUser(context.Background(), "marcus@marcus.com")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(user)
 
 	const filepathRoot = "."
 	const apiPrefix = "/api/"
