@@ -11,7 +11,6 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
-		//ExpiresInSeconds int    `json:"expires_in_seconds"`
 	}
 	type resp struct {
 		User
@@ -38,11 +37,6 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
 		return
 	}
-
-	//expirationTime := time.Hour
-	//if p.ExpiresInSeconds > 0 && p.ExpiresInSeconds < 3600 {
-	//	expirationTime = time.Duration(p.ExpiresInSeconds) * time.Second
-	//}
 
 	token, err := auth.MakeJWT(user.ID, cfg.jwtSecret)
 	if err != nil {

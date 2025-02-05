@@ -4,10 +4,13 @@ values ($1, now(), now(), $2, now() + interval '60 days', null)
 returning *;
 
 -- name: GetUserFromRefreshToken :one
-select *
-from refresh_tokens
+select u.*
+from refresh_tokens rt
+         join users u
+              on rt.user_id = u.id
 where token = $1
-  and revoked_at is null;
+  and revoked_at is null
+  and expires_at > now();
 
 -- name: RevokeToken :exec
 update refresh_tokens
