@@ -67,6 +67,7 @@ Accept: application/json
 
 #### test webhook should return not found
 POST http://localhost:8080/api/polka/webhooks
+Authorization: ApiKey f271c81ff7084ee5b99a5091b42d486e
 
 {
   "event": "user.upgraded",
