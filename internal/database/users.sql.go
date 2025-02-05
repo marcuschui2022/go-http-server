@@ -14,7 +14,7 @@ import (
 const createUser = `-- name: CreateUser :one
 insert into users (id, created_at, updated_at, email, hashed_password)
 values (gen_random_uuid(), now(), now(), $1, $2)
-returning id, created_at, updated_at, email, hashed_password
+returning id, created_at, updated_at, email, hashed_password, is_chirpy_red
 `
 
 type CreateUserParams struct {
@@ -31,12 +31,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdatedAt,
 		&i.Email,
 		&i.HashedPassword,
+		&i.IsChirpyRed,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-select id, created_at, updated_at, email, hashed_password
+select id, created_at, updated_at, email, hashed_password, is_chirpy_red
 from users
 where email = $1
 `
@@ -50,6 +51,33 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.UpdatedAt,
 		&i.Email,
 		&i.HashedPassword,
+		&i.IsChirpyRed,
+	)
+	return i, err
+}
+
+const setUserChirpyRed = `-- name: SetUserChirpyRed :one
+update users
+set is_chirpy_red = $1
+where id = $2
+returning id, created_at, updated_at, email, hashed_password, is_chirpy_red
+`
+
+type SetUserChirpyRedParams struct {
+	IsChirpyRed bool
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetUserChirpyRed(ctx context.Context, arg SetUserChirpyRedParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, setUserChirpyRed, arg.IsChirpyRed, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Email,
+		&i.HashedPassword,
+		&i.IsChirpyRed,
 	)
 	return i, err
 }
@@ -60,7 +88,7 @@ set email=$2,
     hashed_password =$3,
     updated_at=now()
 where id = $1
-returning id, created_at, updated_at, email, hashed_password
+returning id, created_at, updated_at, email, hashed_password, is_chirpy_red
 `
 
 type UpdateUserParams struct {
@@ -78,6 +106,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.UpdatedAt,
 		&i.Email,
 		&i.HashedPassword,
+		&i.IsChirpyRed,
 	)
 	return i, err
 }

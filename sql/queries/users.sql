@@ -15,3 +15,9 @@ set email=$2,
     updated_at=now()
 where id = $1
 returning *;
+
+-- name: SetUserChirpyRed :one
+update users
+set is_chirpy_red = $1
+where id = $2
+returning *;
