@@ -20,17 +20,17 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "email": "f36645e2-b89f-4f02-ae21-22c2e5844926@example.com",
-  "password": "passwor2d1"
+  "email": "4fe943d2-1a2a-4524-9bad-1db6e1b2ccd4@example.com",
+  "password": "password1"
 }
 
 ### test create chirp
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiIwOTgyODgwZS02M2VhLTRhMTUtYTYyZS05ZTUxN2YxZWRkNWIiLCJleHAiOjE3Mzg3NDMyNzgsImlhdCI6MTczODczOTY3OH0.Llx1gd7xoRuv6uRy8eIuIbTifidYIyjbioov5VFsptc
 
 {
-  "body": "Hello, world! 2",
-  "user_id": "b4eacf70-5027-4276-9abc-389f34740922"
+  "body": "Hello, world! 2"
 }
 
 ### test get chirps

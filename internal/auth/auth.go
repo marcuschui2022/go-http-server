@@ -6,6 +6,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"strings"
 	"time"
 )
 
@@ -74,4 +76,20 @@ func ValidateJWT(tokenString, tokenSecret string) (uuid.UUID, error) {
 		return uuid.Nil, fmt.Errorf("invalid user ID: %w", err)
 	}
 	return id, nil
+}
+
+func GetBearerToken(headers http.Header) (string, error) {
+	header := headers.Get("Authorization")
+	if header == "" {
+		return "", errors.New("no authorization header")
+	}
+	parts := strings.Split(header, " ")
+	if len(parts) != 2 {
+		return "", errors.New("invalid authorization header")
+	}
+	if parts[0] != "Bearer" {
+		return "", errors.New("invalid authorization header")
+	}
+
+	return parts[1], nil
 }

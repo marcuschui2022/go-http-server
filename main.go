@@ -15,6 +15,7 @@ type apiConfig struct {
 	fileserverHits atomic.Int32
 	db             *database.Queries
 	platform       string
+	jwtSecret      string
 }
 
 // Chirpy start!
@@ -41,6 +42,8 @@ func main() {
 		}
 	}(db)
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
@@ -52,6 +55,7 @@ func main() {
 		fileserverHits: atomic.Int32{},
 		db:             dbQueries,
 		platform:       platform,
+		jwtSecret:      jwtSecret,
 	}
 
 	mux := http.NewServeMux()
