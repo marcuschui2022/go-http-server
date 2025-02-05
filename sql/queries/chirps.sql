@@ -12,3 +12,9 @@ order by created_at;
 select *
 from chirps
 where id = $1;
+
+-- name: DeleteChirpsByID :exec
+delete
+from chirps
+where id = $1
+  and user_id = $2;
