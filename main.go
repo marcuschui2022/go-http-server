@@ -69,7 +69,8 @@ func main() {
 	mux.HandleFunc("POST /api/login", apiCfg.handlerUserLogin)
 
 	srv := &http.Server{
-		Addr:    ":" + port,
+		//127 for Do you want the application “main” to accept incoming network connections?
+		Addr:    "127.0.0.1:" + port,
 		Handler: mux,
 	}
 
