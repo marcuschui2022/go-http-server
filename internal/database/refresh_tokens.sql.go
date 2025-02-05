@@ -37,22 +37,24 @@ func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshToken
 }
 
 const getUserFromRefreshToken = `-- name: GetUserFromRefreshToken :one
-select token, created_at, updated_at, expires_at, revoked_at, user_id
-from refresh_tokens
+select u.id, u.created_at, u.updated_at, u.email, u.hashed_password
+from refresh_tokens rt
+         join users u
+              on rt.user_id = u.id
 where token = $1
   and revoked_at is null
+  and expires_at > now()
 `
 
-func (q *Queries) GetUserFromRefreshToken(ctx context.Context, token string) (RefreshToken, error) {
+func (q *Queries) GetUserFromRefreshToken(ctx context.Context, token string) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUserFromRefreshToken, token)
-	var i RefreshToken
+	var i User
 	err := row.Scan(
-		&i.Token,
+		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.ExpiresAt,
-		&i.RevokedAt,
-		&i.UserID,
+		&i.Email,
+		&i.HashedPassword,
 	)
 	return i, err
 }
