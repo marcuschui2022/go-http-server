@@ -18,3 +18,8 @@ delete
 from chirps
 where id = $1
   and user_id = $2;
+
+-- name: GetChirpsByUserID :many
+select *
+from chirps
+where user_id = $1;

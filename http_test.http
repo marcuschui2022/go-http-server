@@ -11,7 +11,7 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "email": "marcus@example.com",
+  "email": "marcus1@example.com",
   "password": "password1"
 }
 
@@ -20,7 +20,7 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "email": "marcus@example.com",
+  "email": "marcus1@example.com",
   "password": "password1"
 }
 
@@ -47,14 +47,18 @@ Authorization: Bearer 5c5309acefce0c9b460518ea2c4ace4e85fc065d63b1b962fac3d1a2ee
 ### test create chirp
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiI0MmM2YmFiYi0zODc3LTQ0NmQtYWVlNi02MjgyMGY2ZmMwYmYiLCJleHAiOjE3Mzg3OTA1NjUsImlhdCI6MTczODc4Njk2NX0.TMSvRH8ORijjnKBfCR8tsyzblMmeFHgrYsYEmIDMKVw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiIzMjRiZGYzNC04MTdkLTQ5ZTMtYjAzYi0xMTIzZDhkYTNhZGMiLCJleHAiOjE3Mzg4MDA1MTcsImlhdCI6MTczODc5NjkxN30.N9yV5CdiKUke72dGanhgG9s2gz5dJvy-5djbx7LY0tw
 
 {
-  "body": "Hello, world! {{$random.uuid}}"
+  "body": "Gale!123"
 }
 
 ### test get chirps
 GET http://localhost:8080/api/chirps
+Accept: application/json
+
+### test get chirps 2
+GET http://localhost:8080/api/chirps?author_id=324bdf34-817d-49e3-b03b-1123d8da3adc
 Accept: application/json
 
 ### test get chirps by id
