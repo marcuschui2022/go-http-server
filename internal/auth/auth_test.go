@@ -5,7 +5,6 @@ import (
 	"github.com/google/uuid"
 	"net/http"
 	"testing"
-	"time"
 )
 
 const tokenSecret = "supersecret"
@@ -85,9 +84,8 @@ func TestCheckPasswordHash(t *testing.T) {
 
 func TestMakeJWT(t *testing.T) {
 	userId := uuid.New()
-	expiresTime := 60 * time.Second
 
-	_, err := MakeJWT(userId, tokenSecret, expiresTime)
+	_, err := MakeJWT(userId, tokenSecret)
 	if err != nil {
 		t.Errorf("MakeJWT failed: %v", err)
 	}
@@ -95,7 +93,7 @@ func TestMakeJWT(t *testing.T) {
 
 func TestValidateJWT(t *testing.T) {
 	userID := uuid.New()
-	validToken, _ := MakeJWT(userID, "secret", time.Hour)
+	validToken, _ := MakeJWT(userID, "secret")
 
 	tests := []struct {
 		name        string

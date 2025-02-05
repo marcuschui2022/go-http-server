@@ -3,15 +3,15 @@ package main
 import (
 	"encoding/json"
 	"example.com/marcus/go-http-server/internal/auth"
+	"example.com/marcus/go-http-server/internal/database"
 	"net/http"
-	"time"
 )
 
 func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Email            string `json:"email"`
-		Password         string `json:"password"`
-		ExpiresInSeconds int    `json:"expires_in_seconds"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		//ExpiresInSeconds int    `json:"expires_in_seconds"`
 	}
 	type resp struct {
 		User
@@ -39,14 +39,28 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expirationTime := time.Hour
-	if p.ExpiresInSeconds > 0 && p.ExpiresInSeconds < 3600 {
-		expirationTime = time.Duration(p.ExpiresInSeconds) * time.Second
-	}
+	//expirationTime := time.Hour
+	//if p.ExpiresInSeconds > 0 && p.ExpiresInSeconds < 3600 {
+	//	expirationTime = time.Duration(p.ExpiresInSeconds) * time.Second
+	//}
 
-	token, err := auth.MakeJWT(user.ID, cfg.jwtSecret, expirationTime)
+	token, err := auth.MakeJWT(user.ID, cfg.jwtSecret)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't access jwt token", err)
+		return
+	}
+
+	refreshToken, err := auth.MakeRefreshToken()
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't access refresh token", err)
+	}
+
+	_, err = cfg.db.CreateRefreshToken(r.Context(), database.CreateRefreshTokenParams{
+		UserID: user.ID,
+		Token:  refreshToken,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't save refresh token", err)
 		return
 	}
 
@@ -57,6 +71,7 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 			UpdatedAt: user.UpdatedAt,
 			Email:     user.Email,
 		},
-		Token: token,
+		Token:        token,
+		RefreshToken: refreshToken,
 	})
 }

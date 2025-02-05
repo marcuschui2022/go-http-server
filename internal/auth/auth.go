@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
@@ -36,11 +38,11 @@ func HashPassword(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
-func MakeJWT(userId uuid.UUID, tokenSecret string, expiresIn time.Duration) (string, error) {
+func MakeJWT(userId uuid.UUID, tokenSecret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    string(TokenTypeAccess),
 		IssuedAt:  jwt.NewNumericDate(time.Now().UTC()),
-		ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(expiresIn)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(time.Hour)),
 		Subject:   userId.String(),
 	})
 	jwtToken, err := token.SignedString([]byte(tokenSecret))
@@ -92,4 +94,13 @@ func GetBearerToken(headers http.Header) (string, error) {
 	}
 
 	return splitAuth[1], nil
+}
+
+func MakeRefreshToken() (string, error) {
+	var bytes32 [32]byte
+	_, err := rand.Read(bytes32[:])
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes32[:]), nil
 }

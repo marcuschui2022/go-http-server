@@ -21,9 +21,18 @@ Content-Type: application/json
 
 {
   "email": "a5573d53-120e-4a2b-bcd3-cb9171487c84@example.com",
-  "password": "password1",
-  "expires_in_seconds": 20
+  "password": "password1"
 }
+
+### test refresh token
+POST http://localhost:8080/api/refresh
+Content-Type: application/json
+Authorization: Bearer 5c5309acefce0c9b460518ea2c4ace4e85fc065d63b1b962fac3d1a2eec55360
+
+### test revoke refresh token
+POST http://localhost:8080/api/revoke
+Content-Type: application/json
+Authorization: Bearer 5c5309acefce0c9b460518ea2c4ace4e85fc065d63b1b962fac3d1a2eec55360
 
 ### test create chirp
 POST http://localhost:8080/api/chirps
