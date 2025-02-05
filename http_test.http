@@ -20,17 +20,18 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "email": "4fe943d2-1a2a-4524-9bad-1db6e1b2ccd4@example.com",
-  "password": "password1"
+  "email": "a5573d53-120e-4a2b-bcd3-cb9171487c84@example.com",
+  "password": "password1",
+  "expires_in_seconds": 20
 }
 
 ### test create chirp
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiIwOTgyODgwZS02M2VhLTRhMTUtYTYyZS05ZTUxN2YxZWRkNWIiLCJleHAiOjE3Mzg3NDMyNzgsImlhdCI6MTczODczOTY3OH0.Llx1gd7xoRuv6uRy8eIuIbTifidYIyjbioov5VFsptc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiJhMDFjZjdjNS1lY2Y2LTQ2OWItYmJiNy1hOTQ4MjcyZWM4NzAiLCJleHAiOjE3Mzg3NDA4NzAsImlhdCI6MTczODc0MDg1MH0.vJ9xRgTNNLtmmvEuMRfJliwF4jqmCzzc7CbjCdGOdZo
 
 {
-  "body": "Hello, world! 2"
+  "body": "Hello, world! {{$random.uuid}}"
 }
 
 ### test get chirps
