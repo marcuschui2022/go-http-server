@@ -81,6 +81,8 @@ func main() {
 	mux.HandleFunc("POST /api/refresh", apiCfg.handlerRefresh)
 	mux.HandleFunc("POST /api/revoke", apiCfg.handlerRevoke)
 
+	mux.HandleFunc("POST /api/polka/webhooks", apiCfg.handlerWebhook)
+
 	srv := &http.Server{
 		//127 for Do you want the application “main” to accept incoming network connections?
 		Addr:    "127.0.0.1:" + port,

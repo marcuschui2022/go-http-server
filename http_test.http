@@ -65,3 +65,12 @@ Accept: application/json
 DELETE http://localhost:8080/api/chirps/eb950fda-7a71-4e1c-88e7-b420e238ca01
 Accept: application/json
 
+#### test webhook should return not found
+POST http://localhost:8080/api/polka/webhooks
+
+{
+  "event": "user.upgraded",
+  "data": {
+    "user_id": "e1033b2f-4100-4205-95bb-bfc4918fe634"
+  }
+}

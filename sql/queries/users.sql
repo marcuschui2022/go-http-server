@@ -16,8 +16,9 @@ set email=$2,
 where id = $1
 returning *;
 
--- name: SetUserChirpyRed :one
-update users
-set is_chirpy_red = $1
-where id = $2
-returning *;
+-- name: UpgradeToChirpyRed :one
+UPDATE users
+SET is_chirpy_red = true,
+    updated_at    = NOW()
+WHERE id = $1
+RETURNING *;
