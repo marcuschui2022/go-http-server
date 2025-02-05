@@ -20,8 +20,18 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "email": "a5573d53-120e-4a2b-bcd3-cb9171487c84@example.com",
-  "password": "password1"
+  "email": "marcus@example.com",
+  "password": "password2"
+}
+
+### test user update
+PUT http://localhost:8080/api/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiIwOWMzNmZhZC1iZGE1LTQ3YWItODk2My00ZjBhZDAzZjVjZDIiLCJleHAiOjE3Mzg3NTQxMDMsImlhdCI6MTczODc1MDUwM30.kLH29gyQ__MsvQOto5GBp9joQtW27K4_tYzm-L9jy_U
+
+{
+  "email": "marcus@example.com",
+  "password": "password2"
 }
 
 ### test refresh token

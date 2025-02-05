@@ -7,6 +7,11 @@ import (
 )
 
 func respondWithError(w http.ResponseWriter, code int, msg string, err error) {
+	//if errors.Is(err, sql.ErrNoRows) {
+	//	respondWithError(w, http.StatusUnauthorized, "", nil)
+	//	return
+	//}
+
 	if err != nil {
 		log.Printf("Error: %v", err)
 	}
@@ -16,6 +21,7 @@ func respondWithError(w http.ResponseWriter, code int, msg string, err error) {
 	type errorResponse struct {
 		Error string `json:"error"`
 	}
+
 	respondWithJSON(w, code, errorResponse{Error: msg})
 }
 
