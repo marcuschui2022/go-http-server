@@ -22,7 +22,6 @@ type Chirp struct {
 func (cfg *apiConfig) handlerCreateChirp(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Body string `json:"body"`
-		//UserID uuid.UUID `json:"user_id"`
 	}
 
 	tokenString, err := auth.GetBearerToken(r.Header)

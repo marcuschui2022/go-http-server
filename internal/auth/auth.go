@@ -18,6 +18,9 @@ const (
 	TokenTypeAccess TokenType = "chirpy"
 )
 
+// ErrNoAuthHeaderIncluded -
+var ErrNoAuthHeaderIncluded = errors.New("no auth header included in request")
+
 func CheckPasswordHash(password, hash string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
 		return fmt.Errorf("invalid password: %w", err)
@@ -81,15 +84,12 @@ func ValidateJWT(tokenString, tokenSecret string) (uuid.UUID, error) {
 func GetBearerToken(headers http.Header) (string, error) {
 	header := headers.Get("Authorization")
 	if header == "" {
-		return "", errors.New("no authorization header")
+		return "", ErrNoAuthHeaderIncluded
 	}
-	parts := strings.Split(header, " ")
-	if len(parts) != 2 {
-		return "", errors.New("invalid authorization header")
-	}
-	if parts[0] != "Bearer" {
+	splitAuth := strings.Split(header, " ")
+	if len(splitAuth) != 2 || splitAuth[0] != "Bearer" {
 		return "", errors.New("invalid authorization header")
 	}
 
-	return parts[1], nil
+	return splitAuth[1], nil
 }

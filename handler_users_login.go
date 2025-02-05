@@ -15,6 +15,8 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	type resp struct {
 		User
+		Token        string `json:"token"`
+		RefreshToken string `json:"refresh_token"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -23,10 +25,6 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Couldn't decode parameters", err)
 		return
-	}
-
-	if p.ExpiresInSeconds == 0 {
-		p.ExpiresInSeconds = 3600
 	}
 
 	user, err := cfg.db.GetUserByEmail(r.Context(), p.Email)
@@ -41,14 +39,24 @@ func (cfg *apiConfig) handlerUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expireIn := time.Duration(p.ExpiresInSeconds) * time.Second
+	expirationTime := time.Hour
+	if p.ExpiresInSeconds > 0 && p.ExpiresInSeconds < 3600 {
+		expirationTime = time.Duration(p.ExpiresInSeconds) * time.Second
+	}
 
-	token, err := auth.MakeJWT(user.ID, cfg.jwtSecret, expireIn)
+	token, err := auth.MakeJWT(user.ID, cfg.jwtSecret, expirationTime)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't access jwt token", err)
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, resp{
-		User{
-			ID:    user.ID,
-			Email: user.Email,
-			Token: token,
-		}})
+		User: User{
+			ID:        user.ID,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+			Email:     user.Email,
+		},
+		Token: token,
+	})
 }
