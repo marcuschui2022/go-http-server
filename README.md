@@ -137,7 +137,9 @@ By default, the server listens on port **8080**. You can change this in the sour
 
 - **Create Chirp:** `POST /api/chirps`
 - **Retrieve Chirps:** `GET /api/chirps`
-    - Optional query parameter `author_id` to filter by user.
+    - Optional query parameter `author_id` (UUID) to filter chirps by user.
+    - Optional query parameter `sort` to specify the order in which results are returned. Use `asc` for ascending
+      order (default) or `desc` for descending order.
 - **Retrieve Single Chirp:** `GET /api/chirps/{chirpID}`
 - **Delete Chirp:** `DELETE /api/chirps/{chirpID}`
 
