@@ -116,7 +116,7 @@ these steps:
 From the project root, run:
 
 ```bash
-go run main.go
+go run .
 ```
 
 By default, the server listens on port **8080**. You can change this in the source if needed.
