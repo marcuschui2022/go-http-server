@@ -1,7 +1,8 @@
 # Chirpy
 
-Chirpy is a practice go http server service built with Go. It features user authentication, chirp posting, and
-administrative endpoints for metrics and reset operations.
+Chirpy is a sample HTTP server built with Go. It supports user authentication, chirp posting, and includes
+administrative endpoints for metrics and system resets.
+
 
 ---
 
