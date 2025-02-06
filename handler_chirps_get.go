@@ -1,8 +1,10 @@
 package main
 
 import (
+	"example.com/marcus/go-http-server/internal/database"
 	"github.com/google/uuid"
 	"net/http"
+	"sort"
 )
 
 func (cfg *apiConfig) handlerGetChirpByID(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +31,9 @@ func (cfg *apiConfig) handlerGetChirpByID(w http.ResponseWriter, r *http.Request
 }
 
 func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
+	sortParam := r.URL.Query().Get("sort")
 	idString := r.URL.Query().Get("author_id")
+
 	if idString == "" {
 		chirps, err := cfg.db.GetChirps(r.Context())
 		if err != nil {
@@ -37,7 +41,7 @@ func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		respondWithJSON(w, http.StatusOK, chirps)
+		respondWithJSON(w, http.StatusOK, sortChirps(chirps, sortParam))
 		return
 	}
 
@@ -53,5 +57,50 @@ func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, chirps)
+	respondWithJSON(w, http.StatusOK, sortChirps(chirps, sortParam))
+}
+
+func sortChirps(chirps []database.Chirp, sortParam string) []Chirp {
+	var sortedChirps []Chirp
+	switch sortParam {
+	case "asc":
+		sort.Slice(chirps, func(i, j int) bool {
+			return chirps[i].CreatedAt.Nanosecond() < chirps[j].CreatedAt.Nanosecond()
+		})
+		for _, chirp := range chirps {
+			sortedChirps = append(sortedChirps, Chirp{
+				ID:        chirp.ID,
+				CreatedAt: chirp.CreatedAt,
+				UpdatedAt: chirp.UpdatedAt,
+				Body:      chirp.Body,
+				UserID:    chirp.UserID,
+			})
+		}
+		return sortedChirps
+	case "desc":
+		sort.Slice(chirps, func(i, j int) bool {
+			return chirps[i].CreatedAt.Nanosecond() > chirps[j].CreatedAt.Nanosecond()
+		})
+		for _, chirp := range chirps {
+			sortedChirps = append(sortedChirps, Chirp{
+				ID:        chirp.ID,
+				CreatedAt: chirp.CreatedAt,
+				UpdatedAt: chirp.UpdatedAt,
+				Body:      chirp.Body,
+				UserID:    chirp.UserID,
+			})
+		}
+		return sortedChirps
+	default:
+		for _, chirp := range chirps {
+			sortedChirps = append(sortedChirps, Chirp{
+				ID:        chirp.ID,
+				CreatedAt: chirp.CreatedAt,
+				UpdatedAt: chirp.UpdatedAt,
+				Body:      chirp.Body,
+				UserID:    chirp.UserID,
+			})
+		}
+		return sortedChirps
+	}
 }
