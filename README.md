@@ -44,8 +44,8 @@ administrative endpoints for metrics and system resets.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/<username>/<repository>.git
-   cd <repository>
+   git clone https://github.com/marcuschui2022/go-http-server.git
+   cd go-http-server
    ```
 
 2. **Install dependencies:**
